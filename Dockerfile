@@ -1,22 +1,18 @@
 FROM python:3.11-slim
 
+# Не буферизовать stdout — логи сразу видны в Render
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+
 WORKDIR /app
 
-# Устанавливаем системные зависимости
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    gcc \
-    && rm -rf /var/lib/apt/lists/*
-
-# Копируем и устанавливаем зависимости
+# Сначала только зависимости (кэшируется если код не менялся)
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Копируем код бота
+# Копируем код
 COPY progrev_bot.py .
 
-# Создаем пользователя
-RUN useradd -m -u 1000 botuser && chown -R botuser:botuser /app
-USER botuser
+EXPOSE 8080
 
-# Запускаем бота (если используете polling режим)
-CMD ["uvicorn", "progrev_bot_webhook:app", "--host", "0.0.0.0", "--port", "8080"]
+CMD ["python", "-m", "uvicorn", "progrev_bot:app", "--host", "0.0.0.0", "--port", "8080", "--log-level", "info", "--workers", "1"]
