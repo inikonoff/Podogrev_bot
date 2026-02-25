@@ -1,9 +1,3 @@
-"""
-Telegram-бот «Архитектор Прогрева»
-Адаптирован для работы через вебхуки (Render/Heroku/UptimeRobot)
-Использует Groq API (llama-3.3-70b) + aiogram 3.x + FastAPI
-"""
-
 import os
 import sys
 import signal
