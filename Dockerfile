@@ -19,4 +19,4 @@ RUN useradd -m -u 1000 botuser && chown -R botuser:botuser /app
 USER botuser
 
 # Запускаем бота (если используете polling режим)
-CMD ["python", "progrev_bot.py"]
+CMD ["uvicorn", "progrev_bot_webhook:app", "--host", "0.0.0.0", "--port", "8080"]
